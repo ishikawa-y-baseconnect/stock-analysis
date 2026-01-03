@@ -5,6 +5,7 @@ from .features import FeatureEngineer
 from .xgboost_predictor import XGBoostPredictor
 from .lightgbm_predictor import LightGBMPredictor
 from .ensemble import EnsemblePredictor
+from .price_range_predictor import PriceRangePredictor, PriceRangePrediction
 
 __all__ = [
     "BasePredictor",
@@ -13,4 +14,6 @@ __all__ = [
     "XGBoostPredictor",
     "LightGBMPredictor",
     "EnsemblePredictor",
+    "PriceRangePredictor",
+    "PriceRangePrediction",
 ]

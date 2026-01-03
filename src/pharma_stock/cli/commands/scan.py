@@ -95,9 +95,10 @@ def scan_bottom(
     table.add_column("技術", justify="right")
     table.add_column("割安", justify="right")
     table.add_column("上昇", justify="right")
+    table.add_column("予測", justify="right")
     table.add_column("シグナル")
-    table.add_column("目標価格", justify="right")
-    table.add_column("損切り", justify="right")
+    table.add_column("3M予測高値", justify="right")
+    table.add_column("6M予測高値", justify="right")
 
     for i, sig in enumerate(signals, 1):
         # シグナル色
@@ -110,6 +111,10 @@ def scan_bottom(
         else:
             signal_str = "[dim]見送り[/dim]"
 
+        # 予測値のフォーマット
+        pred_high_3m = f"¥{sig.predicted_high_3m:,.0f}" if sig.predicted_high_3m else "-"
+        pred_high_6m = f"¥{sig.predicted_high_6m:,.0f}" if sig.predicted_high_6m else "-"
+
         table.add_row(
             str(i),
             sig.company_name,
@@ -118,9 +123,10 @@ def scan_bottom(
             f"{sig.technical_score:.0f}",
             f"{sig.fundamental_score:.0f}",
             f"{sig.upside_potential_score:.0f}",
+            f"{sig.prediction_score:.0f}",
             signal_str,
-            f"¥{sig.target_price:,.0f}",
-            f"¥{sig.stop_loss_price:,.0f}",
+            pred_high_3m,
+            pred_high_6m,
         )
 
     console.print(table)
@@ -135,6 +141,18 @@ def scan_bottom(
         console.print("\n[bold]買いシグナル詳細[/bold]")
 
         for sig in buy_signals[:3]:  # 上位3銘柄
+            # 予測情報
+            prediction_info = ""
+            if sig.predicted_high_3m:
+                ret_3m = sig.expected_return_3m * 100 if sig.expected_return_3m else 0
+                ret_6m = sig.expected_return_6m * 100 if sig.expected_return_6m else 0
+                prediction_info = (
+                    f"\n\n[bold magenta]ML価格予測:[/bold magenta]\n"
+                    f"  3ヶ月後: ¥{sig.predicted_low_3m:,.0f} 〜 ¥{sig.predicted_high_3m:,.0f} (期待+{ret_3m:.0f}%)\n"
+                    f"  6ヶ月後: ¥{sig.predicted_low_6m:,.0f} 〜 ¥{sig.predicted_high_6m:,.0f} (期待+{ret_6m:.0f}%)\n"
+                    f"  信頼度: {sig.prediction_confidence*100:.0f}%"
+                )
+
             console.print(
                 Panel(
                     f"[bold cyan]{sig.company_name}[/bold cyan] ({sig.ticker})\n\n"
@@ -144,6 +162,9 @@ def scan_bottom(
                     + "\n".join(f"  • {r}" for r in sig.fundamental_reasons)
                     + f"\n\n[bold]上昇ポテンシャル:[/bold]\n"
                     + "\n".join(f"  • {r}" for r in sig.upside_reasons)
+                    + f"\n\n[bold]ML予測理由:[/bold]\n"
+                    + "\n".join(f"  • {r}" for r in sig.prediction_reasons)
+                    + prediction_info
                     + (
                         f"\n\n[bold red]リスク:[/bold red]\n"
                         + "\n".join(f"  • {r}" for r in sig.risks)
@@ -212,20 +233,26 @@ def scan_detail(
     table.add_row(
         "テクニカル底値",
         f"{signal.technical_score:.0f}/100",
-        "35%",
-        f"{signal.technical_score * 0.35:.1f}",
+        "25%",
+        f"{signal.technical_score * 0.25:.1f}",
     )
     table.add_row(
         "ファンダメンタル割安",
         f"{signal.fundamental_score:.0f}/100",
-        "30%",
-        f"{signal.fundamental_score * 0.30:.1f}",
+        "20%",
+        f"{signal.fundamental_score * 0.20:.1f}",
     )
     table.add_row(
         "上昇ポテンシャル",
         f"{signal.upside_potential_score:.0f}/100",
-        "35%",
-        f"{signal.upside_potential_score * 0.35:.1f}",
+        "25%",
+        f"{signal.upside_potential_score * 0.25:.1f}",
+    )
+    table.add_row(
+        "ML予測",
+        f"{signal.prediction_score:.0f}/100",
+        "30%",
+        f"{signal.prediction_score * 0.30:.1f}",
     )
     table.add_row(
         "[bold]総合スコア[/bold]",
@@ -242,6 +269,15 @@ def scan_detail(
     console.print(f"損切りライン（-10%）: ¥{signal.stop_loss_price:,.0f}")
     console.print(f"リスクリワード比: {signal.risk_reward_ratio:.1f}:1")
 
+    # ML予測価格レンジ
+    if signal.predicted_high_3m:
+        console.print("\n[bold magenta]ML価格予測:[/bold magenta]")
+        ret_3m = signal.expected_return_3m * 100 if signal.expected_return_3m else 0
+        ret_6m = signal.expected_return_6m * 100 if signal.expected_return_6m else 0
+        console.print(f"  3ヶ月後: ¥{signal.predicted_low_3m:,.0f} 〜 ¥{signal.predicted_high_3m:,.0f} (期待リターン+{ret_3m:.0f}%)")
+        console.print(f"  6ヶ月後: ¥{signal.predicted_low_6m:,.0f} 〜 ¥{signal.predicted_high_6m:,.0f} (期待リターン+{ret_6m:.0f}%)")
+        console.print(f"  予測信頼度: {signal.prediction_confidence*100:.0f}%")
+
     # 詳細理由
     if signal.technical_reasons:
         console.print("\n[bold]テクニカル分析:[/bold]")
@@ -256,6 +292,11 @@ def scan_detail(
     if signal.upside_reasons:
         console.print("\n[bold]上昇ポテンシャル:[/bold]")
         for r in signal.upside_reasons:
+            console.print(f"  • {r}")
+
+    if signal.prediction_reasons:
+        console.print("\n[bold]ML予測分析:[/bold]")
+        for r in signal.prediction_reasons:
             console.print(f"  • {r}")
 
     if signal.risks:
