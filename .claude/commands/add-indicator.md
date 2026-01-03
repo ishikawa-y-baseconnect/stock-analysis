@@ -1,49 +1,40 @@
-# /add-indicator - テクニカル指標追加タスク
+---
+description: Add new technical indicator to bottom signal detection system.
+allowed-tools: Read, Edit, Bash(PYTHONPATH=src python:*)
+argument-hint: <indicator-name>
+---
 
-底値シグナルに新しいテクニカル指標を追加します。
+# /add-indicator
 
-## 使用例
+Add a new technical indicator to the signal system.
 
-```
-/add-indicator MACD
-/add-indicator 一目均衡表
-```
+## Target file
 
-## 実装手順
+`src/pharma_stock/analysis/bottom_signal.py`
 
-1. `src/pharma_stock/analysis/bottom_signal.py` を開く
-2. `_calc_technical_score()` メソッドに新しい指標を追加
-3. taライブラリを使用して計算
-4. スコア計算（0-100に正規化）
-5. 理由リストに追加
-6. バックテストで効果検証
+## Implementation steps
 
-## 変更対象ファイル
+1. Open `_calc_technical_score()` method
+2. Add indicator calculation using `ta` library
+3. Add score logic (normalize to 0-100)
+4. Add reason to reasons list
+5. Run backtest to validate
 
-- `src/pharma_stock/analysis/bottom_signal.py`
-
-## taライブラリの使用例
+## Example: Adding MACD
 
 ```python
 import ta
 
-# MACD
+# In _calc_technical_score():
 macd = ta.trend.macd_diff(df['close'])
-
-# 一目均衡表
-ichimoku = ta.trend.IchimokuIndicator(df['high'], df['low'], df['close'])
-tenkan = ichimoku.ichimoku_conversion_line()
-kijun = ichimoku.ichimoku_base_line()
-
-# ストキャスティクス
-stoch = ta.momentum.stoch(df['high'], df['low'], df['close'])
-```
-
-## スコア計算例
-
-```python
-# MACDがシグナルを上抜け（ゴールデンクロス）
 if macd.iloc[-1] > 0 and macd.iloc[-2] <= 0:
     score += 15
-    reasons.append("MACDゴールデンクロス")
+    reasons.append("MACD golden cross")
 ```
+
+## Available ta indicators
+
+- `ta.trend.macd_diff()` - MACD
+- `ta.momentum.stoch()` - Stochastic
+- `ta.trend.adx()` - ADX
+- `ta.volatility.average_true_range()` - ATR

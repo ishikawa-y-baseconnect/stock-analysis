@@ -1,33 +1,31 @@
-# /backtest - バックテストスキル
+---
+description: Run backtest to validate signal and prediction accuracy against historical data.
+allowed-tools: Bash(source:*), Bash(PYTHONPATH=src python:*)
+argument-hint: <ticker> <date>
+---
 
-底値シグナル・価格予測の精度を過去データで検証します。
+# /backtest
 
-## 使用例
+Validate signal accuracy with historical data.
 
-```
-/backtest 4506.T 2025-04-09
-```
+## Usage
 
-## 実行手順
-
-1. 指定銘柄・日付でバックテストを実行
-2. シグナル、予測値、実績を比較
-3. 結果をテーブル形式で表示
-
-## コード
-
-```python
+```bash
+source .venv/bin/activate
+PYTHONPATH=src python -c "
 from datetime import date
 from pharma_stock.dev import quick_backtest
-
-# 引数をパース
-ticker = "$ARGS[0]" if len("$ARGS") > 0 else "4506.T"
-test_date_str = "$ARGS[1]" if len("$ARGS") > 1 else "2025-04-09"
-
-# 日付をパース
-parts = test_date_str.split("-")
-test_date = date(int(parts[0]), int(parts[1]), int(parts[2]))
-
-# バックテスト実行
-quick_backtest(ticker, test_date)
+quick_backtest('4506.T', date(2025, 4, 9))
+"
 ```
+
+## Arguments
+
+- `ticker`: Stock ticker (e.g., 4506.T)
+- `date`: Test date in YYYY-MM-DD format
+
+## Output
+
+- Signal strength at that date
+- Predicted vs actual high/low prices
+- Prediction error percentage

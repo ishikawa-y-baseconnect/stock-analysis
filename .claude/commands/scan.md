@@ -1,34 +1,32 @@
-# /scan - 底値シグナルスキャン
+---
+description: Scan all pharma stocks for bottom-buying signals. Shows technical, fundamental, ML prediction scores.
+allowed-tools: Bash(source:*), Bash(PYTHONPATH=src python:*)
+---
 
-全銘柄の底値買いシグナルをスキャンします。
+# /scan
 
-## 使用例
+Scan all stocks for bottom-buying signals.
 
-```
-/scan
-/scan --detail 4506.T
-```
-
-## 実行コマンド
+## Usage
 
 ```bash
 source .venv/bin/activate
 PYTHONPATH=src python -m pharma_stock.cli.main scan bottom
 ```
 
-## 詳細分析
+## For detail analysis
 
 ```bash
 PYTHONPATH=src python -m pharma_stock.cli.main scan detail 4506.T
 ```
 
-## 出力項目
+## Output columns
 
-| 項目 | 説明 |
-|------|------|
-| 総合スコア | 0-100点 |
-| テクニカル | RSI, BB, 52週安値 |
-| ファンダメンタル | PER, PBR, 配当 |
-| 上昇ポテンシャル | Phase 3, アナリスト目標 |
-| ML予測 | 3-6ヶ月後の予測高値 |
-| シグナル | 強い買い/買い/様子見/見送り |
+| Column | Description |
+|--------|-------------|
+| Score | Total score 0-100 |
+| Tech | RSI, BB, 52w low |
+| Fund | PER, PBR, dividend |
+| Upside | Phase 3, analyst target |
+| Pred | ML predicted high |
+| Signal | Strong Buy / Buy / Neutral / Avoid |

@@ -1,105 +1,16 @@
 {
-  "project": {
-    "name": "pharma-stock",
-    "description": "国内製薬企業の株価分析・底値買いシグナル検知システム"
+  "permissions": {
+    "allow": [
+      "Bash(git:*)",
+      "Bash(source .venv/bin/activate)",
+      "Bash(PYTHONPATH=src python:*)",
+      "Bash(PYTHONPATH=src python3:*)",
+      "Bash(PYTHONPATH=src pytest:*)",
+      "Bash(pip install:*)",
+      "Bash(pip3 install:*)"
+    ]
   },
-  "agents": {
-    "data_collector": {
-      "name": "データコレクター",
-      "description": "新しいデータソースの追加・既存コレクターの改善",
-      "context_files": [
-        "src/pharma_stock/collectors/"
-      ]
-    },
-    "technical_analyzer": {
-      "name": "テクニカル分析エージェント",
-      "description": "新しいテクニカル指標の追加・分析ロジックの改善",
-      "context_files": [
-        "src/pharma_stock/analysis/"
-      ]
-    },
-    "signal_detector": {
-      "name": "シグナル検知エージェント",
-      "description": "底値買いシグナルの検知ロジック改善",
-      "context_files": [
-        "src/pharma_stock/analysis/bottom_signal.py",
-        "src/pharma_stock/analysis/catalyst_detector.py"
-      ]
-    },
-    "price_predictor": {
-      "name": "価格予測エージェント",
-      "description": "ML予測モデルの改善・新しい予測手法の追加",
-      "context_files": [
-        "src/pharma_stock/prediction/"
-      ]
-    },
-    "backtester": {
-      "name": "バックテストエージェント",
-      "description": "過去データでのシグナル・予測精度検証",
-      "context_files": [
-        "src/pharma_stock/analysis/bottom_signal.py",
-        "src/pharma_stock/prediction/price_range_predictor.py",
-        "src/pharma_stock/dev/backtest_runner.py"
-      ]
-    },
-    "code_reviewer": {
-      "name": "コードレビューエージェント",
-      "description": "コード品質・セキュリティ・パフォーマンスのレビュー",
-      "context_files": [
-        "src/pharma_stock/"
-      ]
-    }
-  },
-  "tasks": {
-    "add_data_source": {
-      "name": "新しいデータソース追加",
-      "category": "feature",
-      "files": [
-        "src/pharma_stock/collectors/",
-        "tests/collectors/"
-      ]
-    },
-    "add_technical_indicator": {
-      "name": "テクニカル指標追加",
-      "category": "enhancement",
-      "files": [
-        "src/pharma_stock/analysis/bottom_signal.py"
-      ]
-    },
-    "improve_prediction": {
-      "name": "予測モデル改善",
-      "category": "enhancement",
-      "files": [
-        "src/pharma_stock/prediction/"
-      ]
-    },
-    "adjust_thresholds": {
-      "name": "シグナル閾値調整",
-      "category": "enhancement",
-      "files": [
-        "src/pharma_stock/analysis/bottom_signal.py"
-      ]
-    },
-    "add_cli_command": {
-      "name": "CLIコマンド追加",
-      "category": "feature",
-      "files": [
-        "src/pharma_stock/cli/commands/",
-        "src/pharma_stock/cli/main.py"
-      ]
-    },
-    "run_backtest": {
-      "name": "バックテスト実行",
-      "category": "test",
-      "files": [
-        "src/pharma_stock/dev/backtest_runner.py"
-      ]
-    }
-  },
-  "commands": {
-    "scan": "PYTHONPATH=src python -m pharma_stock.cli.main scan bottom",
-    "detail": "PYTHONPATH=src python -m pharma_stock.cli.main scan detail",
-    "test": "PYTHONPATH=src pytest tests/ -v",
-    "backtest": "PYTHONPATH=src python -c \"from pharma_stock.dev import quick_backtest; from datetime import date; quick_backtest('4506.T', date(2025, 4, 9))\""
+  "env": {
+    "PYTHONPATH": "src"
   }
 }
