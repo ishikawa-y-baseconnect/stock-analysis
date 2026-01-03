@@ -5,7 +5,7 @@ from rich.console import Console
 
 from pharma_stock import __version__
 
-from .commands import collect, analyze, predict, companies
+from .commands import collect, analyze, predict, companies, scan
 
 app = typer.Typer(
     name="pharma-stock",
@@ -20,6 +20,7 @@ app.add_typer(collect.app, name="collect", help="データ収集コマンド")
 app.add_typer(analyze.app, name="analyze", help="分析コマンド")
 app.add_typer(predict.app, name="predict", help="予測コマンド")
 app.add_typer(companies.app, name="companies", help="企業情報コマンド")
+app.add_typer(scan.app, name="scan", help="底値買いシグナルスキャン")
 
 
 @app.command()
