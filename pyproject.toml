@@ -1,0 +1,88 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pharma-stock-analyzer"
+version = "0.1.0"
+description = "国内製薬企業の株価分析・新薬パイプライン情報に基づく予測システム"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+authors = [
+    { name = "Yuto Ishikawa" }
+]
+keywords = ["stock", "pharmaceutical", "analysis", "prediction", "japan"]
+dependencies = [
+    # データ取得
+    "yfinance>=0.2.40",
+    "requests>=2.31.0",
+    "beautifulsoup4>=4.12.0",
+    "lxml>=5.1.0",
+
+    # データ処理
+    "pandas>=2.2.0",
+    "numpy>=1.26.0",
+
+    # データストレージ
+    "sqlalchemy>=2.0.0",
+
+    # 分析
+    "ta>=0.11.0",
+    "scipy>=1.12.0",
+
+    # 機械学習・予測
+    "scikit-learn>=1.4.0",
+    "xgboost>=2.0.0",
+    "lightgbm>=4.3.0",
+
+    # 可視化
+    "plotly>=5.18.0",
+    "matplotlib>=3.8.0",
+
+    # CLI
+    "typer>=0.9.0",
+    "rich>=13.7.0",
+
+    # ユーティリティ
+    "python-dotenv>=1.0.0",
+    "pydantic>=2.6.0",
+    "pydantic-settings>=2.1.0",
+    "structlog>=24.1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-cov>=4.1.0",
+    "pytest-asyncio>=0.23.0",
+    "ruff>=0.2.0",
+    "mypy>=1.8.0",
+]
+notebook = [
+    "jupyter>=1.0.0",
+    "seaborn>=0.13.0",
+]
+
+[project.scripts]
+pharma-stock = "pharma_stock.cli.main:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/pharma_stock"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "B", "C4", "UP"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-v --cov=pharma_stock --cov-report=term-missing"
