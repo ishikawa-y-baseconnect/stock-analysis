@@ -9,7 +9,8 @@ venv/
 ENV/
 
 # Data & Models (large files - root level only)
-/data/
+/data/*
+!/data/app_predictions.parquet
 /models/
 
 # IDE
