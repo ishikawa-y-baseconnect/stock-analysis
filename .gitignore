@@ -2,56 +2,24 @@
 __pycache__/
 *.py[cod]
 *$py.class
-.Python
 *.so
+.Python
 .venv/
 venv/
 ENV/
 
-# Distribution
-build/
-dist/
-*.egg-info/
-.eggs/
+# Data & Models (large files - root level only)
+/data/
+/models/
 
 # IDE
-.vscode/
 .idea/
+.vscode/
 *.swp
-*.swo
-
-# Environment
-.env
-.env.local
-*.env
-
-# Data (大容量・機密データ)
-data/raw/
-data/processed/
-data/models/
-*.db
-*.sqlite
-*.sqlite3
-
-# Logs
-*.log
-logs/
-
-# Test
-.coverage
-htmlcov/
-.pytest_cache/
-.tox/
-.nox/
-
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Jupyter
-.ipynb_checkpoints/
 
 # OS
 .DS_Store
-Thumbs.db
+
+# Environment
+.env
+*.log
